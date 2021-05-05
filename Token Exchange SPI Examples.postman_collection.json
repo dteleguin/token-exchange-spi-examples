@@ -1,0 +1,206 @@
+{
+	"info": {
+		"_postman_id": "aad98b61-dd66-4ed0-a2f2-16ebe816cd1d",
+		"name": "Token Exchange SPI Examples",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "Cross-Realm Impersonation",
+			"item": [
+				{
+					"name": "Direct Grant",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Extract access token\", function () {",
+									"    var jsonData = pm.response.json();",
+									"    pm.environment.set('ACCESS_TOKEN', jsonData['access_token']);",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "urlencoded",
+							"urlencoded": [
+								{
+									"key": "grant_type",
+									"value": "password",
+									"type": "text"
+								},
+								{
+									"key": "client_id",
+									"value": "admin-cli",
+									"type": "text"
+								},
+								{
+									"key": "username",
+									"value": "alice",
+									"type": "text"
+								},
+								{
+									"key": "password",
+									"value": "alice",
+									"type": "text"
+								}
+							]
+						},
+						"url": {
+							"raw": "http://localhost:8080/auth/realms/alice/protocol/openid-connect/token",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"auth",
+								"realms",
+								"alice",
+								"protocol",
+								"openid-connect",
+								"token"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Token Exchange",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Extract access token\", function () {",
+									"    var jsonData = pm.response.json();",
+									"    var access_token = jsonData['access_token'];",
+									"    pm.environment.set('ACCESS_TOKEN_BOB', );",
+									"    var payload = atob(access_token.split('.')[1]);",
+									"    console.log(JSON.parse(payload));",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "basic",
+							"basic": [
+								{
+									"key": "password",
+									"value": "65ab76c3-ad6e-471b-8ee7-7d19c51c3e55",
+									"type": "string"
+								},
+								{
+									"key": "username",
+									"value": "impersonation",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "urlencoded",
+							"urlencoded": [
+								{
+									"key": "grant_type",
+									"value": "urn:ietf:params:oauth:grant-type:token-exchange",
+									"type": "text"
+								},
+								{
+									"key": "client_id",
+									"value": "impersonation",
+									"type": "text"
+								},
+								{
+									"key": "subject_token",
+									"value": "{{ACCESS_TOKEN}}",
+									"type": "text"
+								},
+								{
+									"key": "requested_subject",
+									"value": "bob",
+									"type": "text"
+								}
+							]
+						},
+						"url": {
+							"raw": "http://localhost:8080/auth/realms/bob/protocol/openid-connect/token",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"auth",
+								"realms",
+								"bob",
+								"protocol",
+								"openid-connect",
+								"token"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "UserInfo",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Check UserInfo\", function () {",
+									"    var jsonData = pm.response.json();",
+									"    pm.expect(jsonData['preferred_username']).to.eql('bob');",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{ACCESS_TOKEN_BOB}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:8080/auth/realms/bob/protocol/openid-connect/userinfo",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"auth",
+								"realms",
+								"bob",
+								"protocol",
+								"openid-connect",
+								"userinfo"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		}
+	]
+}

@@ -208,10 +208,14 @@ public class CrossRealmTokenExchangeProvider implements TokenExchangeProvider {
         act.setPreferredUsername(token.getPreferredUsername());
         
         newToken.setOtherClaims(CLAIM_ACT, act);
+        
+        if (audience != null) {
+            newToken.audience(audience);
+            event.detail(Details.AUDIENCE, audience);
+        }
 
         AccessTokenResponse response = responseBuilder.build();
 
-        event.detail(Details.AUDIENCE, audience);
         event.success();
 
         return cors.builder(Response.ok(response, MediaType.APPLICATION_JSON_TYPE)).build();

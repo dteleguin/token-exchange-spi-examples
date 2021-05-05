@@ -72,7 +72,9 @@ public class CrossRealmTokenExchangeProvider implements TokenExchangeProvider {
         String issuer = jwt.getIssuer();
         String realmName = issuer.substring(issuer.lastIndexOf('/') + 1);        
         
-        return issuer.startsWith(baseUri) && !realmName.equals(realm.getName());
+        return issuer.startsWith(baseUri) 
+                && !realmName.equals(realm.getName())
+                && OAuth2Constants.ACCESS_TOKEN_TYPE.equals(params.getRequestedTokenType());
         
     }
 

@@ -130,6 +130,11 @@
 									"key": "requested_subject",
 									"value": "bob",
 									"type": "text"
+								},
+								{
+									"key": "requested_token_type",
+									"value": "urn:ietf:params:oauth:token-type:access_token",
+									"type": "text"
 								}
 							]
 						},

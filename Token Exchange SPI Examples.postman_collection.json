@@ -140,6 +140,11 @@
 									"key": "audience",
 									"value": "impersonation",
 									"type": "text"
+								},
+								{
+									"key": "scope",
+									"value": "foobar",
+									"type": "text"
 								}
 							]
 						},

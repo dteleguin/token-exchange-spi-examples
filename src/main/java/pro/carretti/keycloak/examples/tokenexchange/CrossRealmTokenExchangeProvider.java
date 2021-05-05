@@ -99,6 +99,7 @@ public class CrossRealmTokenExchangeProvider implements TokenExchangeProvider {
         String requestedTokenType = params.getRequestedTokenType();
         String requestedSubject = context.getFormParams().getFirst(OAuth2Constants.REQUESTED_SUBJECT);
         String audience = params.getAudience();
+        String scope = params.getScope();
 
         // Validate token
 
@@ -199,7 +200,11 @@ public class CrossRealmTokenExchangeProvider implements TokenExchangeProvider {
         AccessToken newToken = responseBuilder.getAccessToken();
         
         // Inject impersonation scope into access token
-        newToken.setScope(newToken.getScope() + " " + SCOPE_IMPERSONATION);
+        StringBuilder newScope = new StringBuilder(newToken.getScope());
+        if (scope != null)
+            newScope.append(" ").append(scope);
+        newScope.append(" ").append(SCOPE_IMPERSONATION);
+        newToken.setScope(newScope.toString());
 
         // Inject impersonator info into access token
         AccessToken act = new AccessToken()
@@ -215,6 +220,7 @@ public class CrossRealmTokenExchangeProvider implements TokenExchangeProvider {
         }
 
         AccessTokenResponse response = responseBuilder.build();
+        response.setScope(newScope.toString());
 
         event.success();
 

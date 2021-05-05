@@ -81,7 +81,7 @@
 									"pm.test(\"Extract access token\", function () {",
 									"    var jsonData = pm.response.json();",
 									"    var access_token = jsonData['access_token'];",
-									"    pm.environment.set('ACCESS_TOKEN_BOB', );",
+									"    pm.environment.set('ACCESS_TOKEN_BOB', access_token);",
 									"    var payload = atob(access_token.split('.')[1]);",
 									"    console.log(JSON.parse(payload));",
 									"});"
@@ -179,7 +179,7 @@
 								}
 							]
 						},
-						"method": "POST",
+						"method": "GET",
 						"header": [],
 						"url": {
 							"raw": "http://localhost:8080/auth/realms/bob/protocol/openid-connect/userinfo",
